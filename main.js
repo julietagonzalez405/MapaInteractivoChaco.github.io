@@ -139,3 +139,45 @@ document.addEventListener("click", evt => {
     overlay.setPosition(undefined);
   }
 });
+
+// --- 🔽 DESCARGAR GEOJSON COMO CSV ---
+async function geojsonToCSV(url) {
+  const response = await fetch(url);
+  const geojson = await response.json();
+  const features = geojson.features;
+  if (!features || !features.length) return "";
+
+  // Extrae nombres de las columnas desde las propiedades
+  const props = Object.keys(features[0].properties);
+  const csvRows = [props.join(",")];
+
+  for (const f of features) {
+    const row = props.map(k => {
+      const val = f.properties[k];
+      // Escapar comas y saltos de línea
+      return `"${(val ?? "").toString().replace(/"/g, '""')}"`;
+    });
+    csvRows.push(row.join(","));
+  }
+
+  return csvRows.join("\n");
+}
+//descraga en formato csv---
+document.getElementById("download-btn").addEventListener("click", async e => {
+  e.preventDefault();
+
+  // Toma el archivo activo según el botón seleccionado
+  const capaActiva = document.querySelector(".filter-btn.active").dataset.layer;
+  const csv = await geojsonToCSV(capaActiva);
+
+  // Crea el blob y fuerza la descarga
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = capaActiva.replace(".geojson", ".csv");
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
