@@ -50,6 +50,7 @@
     #map {
       width: 100%;
       height: calc(100vh - 80px);
+      position: relative;
     }
 
     /* Popup */
@@ -74,28 +75,79 @@
       border-bottom: 1px solid #ddd;
       padding-bottom: 3px;
     }
+
+    /* 🔽 Botón flotante sobre el mapa */
+    #download-btn {
+      position: absolute;
+      top: 50%;
+      right: 30px; /* ajusta la distancia lateral */
+      transform: translateY(-50%);
+      background-color: #6c63ff;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: background 0.3s, transform 0.2s;
+      z-index: 1000;
+    }
+
+    #download-btn:hover {
+      background-color: #554fd8;
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    #download-btn span {
+      font-size: 18px;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
   </style>
 </head>
 
 <body>
   <header>
-  <img src="LogoFondoBlanco.png" alt="Gobierno del Chaco">
+    <img src="LogoFondoBlanco.png" alt="Gobierno del Chaco">
 
-  <h1 class="titulo-header">Censo Nacional Año 2022</h1>
+    <h1 class="titulo-header">Censo Nacional Año 2022</h1>
 
-  <div class="filters">
-    <button class="filter-btn active" data-layer="CobSalud2022Dptos.geojson">Cobertura de salud</button>
-    <button class="filter-btn" data-layer="poblacion_por_edades_dptos.geojson">Datos demográficos</button>
-    <button class="filter-btn" data-layer="Empleabilidad.geojson">Empleabilidad</button>
-    <button class="filter-btn" data-layer="NivelInstruccion.geojson">Nivel de instrucción adultos</button>
+    <div class="filters">
+      <button class="filter-btn active" data-layer="CobSalud2022Dptos.geojson">Cobertura de salud</button>
+      <button class="filter-btn" data-layer="poblacion_por_edades_dptos.geojson">Datos demográficos</button>
+      <button class="filter-btn" data-layer="empleabilidad_dptos.geojson">Empleabilidad</button>
+      <button class="filter-btn" data-layer="max_nivel_instruccion_dptos.geojson">Nivel de instrucción adultos</button>
+    </div>
+  </header>
+
+  <div id="map">
+    <!-- 🔽 Botón flotante de descarga -->
+    <a id="download-btn" href="CobSalud2022Dptos.geojson" download="CobSalud2022Dptos.geojson">
+      <span>⬇</span> Descargar datos de Mapa
+    </a>
   </div>
-</header>
 
-
-  <div id="map"></div>
   <div id="popup" class="ol-popup"></div>
 
   <script src="lib/dist/ol.js"></script>
   <script src="main.js"></script>
+
+  <script>
+    // 🔄 Actualizar el enlace de descarga cuando cambia la capa
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const file = btn.getAttribute("data-layer");
+
+        // Actualiza el botón de descarga
+        const downloadBtn = document.getElementById("download-btn");
+        downloadBtn.href = file;
+        downloadBtn.download = file.split("/").pop();
+      });
+    });
+  </script>
 </body>
 </html>

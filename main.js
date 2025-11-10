@@ -80,7 +80,29 @@ map.on("singleclick", evt => {
       info += `<p><b>Con Obra Social:</b> ${props["Con Obra Social"] ?? "-"} personas</p>`;
       info += `<p><b>Cobertura del Estado:</b> ${props["Cobertura del Estado"] ?? "-"} personas</p>`;
       info += `<p><b>Sin Beneficios:</b> ${props["Sin Beneficios"] ?? "-"} personas</p>`;
-    }
+    } 
+    // --- Empleabilidad ---
+        else if (capaActiva.includes("empleabilidad")) {
+            const nombre = props.departamento || "Desconocido";
+            info = `<h3>Departamento: ${nombre}</h3>`;
+            info += `<p><b>Trabajando:</b> ${props["Trabajando"] ?? "-"} personas</p>`;
+            info += `<p><b>Desocupado:</b> ${props["Desocupado"] ?? "-"} personas</p>`;
+            info += `<p><b>Inactivo:</b> ${props["Inactivo"] ?? "-"} personas</p>`;
+        }
+
+   // --- Nivel de instrucción ---
+else if (capaActiva.includes("max_nivel_instruccion")) {
+  const nombre = props.nombre_departamento || "Desconocido";
+  info = `<h3>Departamento: ${nombre}</h3>`;
+  info += `<p><b>Primario incompleto:</b> ${props.primario_incompleto_pct ?? "-"}</p>`;
+  info += `<p><b>Primario completo:</b> ${props.primario_completo_pct ?? "-"}</p>`;
+  info += `<p><b>Secundario completo:</b> ${props.secundario_completo_pct ?? "-"}</p>`;
+  info += `<p><b>Terciario completo:</b> ${props.terciario_completo_pct ?? "-"}</p>`;
+  info += `<p><b>Universitario completo:</b> ${props.universitario_completo_pct ?? "-"}</p>`;
+  info += `<p><b>Postgrado completo:</b> ${props.postgrado_completo_pct ?? "-"}</p>`;
+  info += `<p><b>No contesta:</b> ${props.no_contesta_pct ?? "-"}</p>`;
+}
+
 
     container.innerHTML = info;
     overlay.setPosition(evt.coordinate);
